@@ -442,19 +442,6 @@ input:checked + .toggle-slider:before {
   color: var(--light-blue);
   min-width: 50px;
   text-align: right;
-} box-shadow: 
-    0 0 10px var(--light-blue),
-    inset 0 0 10px rgba(0, 204, 255, 0.15);
-  transition: all 0.3s ease;
-}
-
-.back-button:hover {
-  background: var(--light-blue);
-  color: var(--dark-blue);
-  transform: scale(1.05);
-  box-shadow: 
-    0 0 15px var(--light-blue),
-    inset 0 0 15px rgba(0, 204, 255, 0.3);
 }
 
 /* Credits */

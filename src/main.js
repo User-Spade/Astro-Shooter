@@ -59,6 +59,9 @@ for (let i = 0; i < starCount; i++) {
   stars.push(new Star());
 }
 
+// UFO will be created later in the file
+let ufo;
+
 // Animation loop
 function animate() {
   ctx.fillStyle = 'rgba(0, 1, 17, 0.1)';
@@ -68,6 +71,13 @@ function animate() {
     star.update();
     star.draw();
   });
+  
+  // UFO animation (if created)
+  if (ufo) {
+    ufo.activate();
+    ufo.update();
+    ufo.draw();
+  }
   
   requestAnimationFrame(animate);
 }
@@ -91,12 +101,34 @@ const gameSettings = {
   visualEffects: true
 };
 
+// High Score System
+function getHighScore() {
+  const saved = localStorage.getItem('astroShooterHighScore');
+  return saved ? parseInt(saved) : 0;
+}
+
+function setHighScore(score) {
+  const current = getHighScore();
+  if (score > current) {
+    localStorage.setItem('astroShooterHighScore', score.toString());
+    return true; // New high score!
+  }
+  return false;
+}
+
+// Display high score on load
+const highScoreDisplay = document.getElementById('high-score');
+if (highScoreDisplay) {
+  highScoreDisplay.textContent = `HI-SCORE: ${getHighScore().toString().padStart(6, '0')}`;
+}
+
 // Background music variables
 let musicOscillator = null;
 let musicOscillator2 = null;
 let musicGainNode = null;
 let isMusicPlaying = false;
 let musicInterval = null;
+let firstInteraction = true; // Track if this is the first user interaction
 
 // Multiple melody patterns for variation
 const melodyPatterns = [
@@ -193,7 +225,13 @@ function playNote(frequency, duration, noteType = 'normal') {
 
 // Function to create retro background music
 function startBackgroundMusic() {
-  if (isMusicPlaying) return;
+  if (isMusicPlaying) {
+    console.log('Music already playing, skipping...');
+    return;
+  }
+  
+  // Set flag immediately to prevent multiple instances
+  isMusicPlaying = true;
   
   try {
     // Resume audio context
@@ -201,7 +239,8 @@ function startBackgroundMusic() {
       audioContext.resume();
     }
     
-    isMusicPlaying = true;
+    // Reset note position
+    currentNote = 0;
     
     // Play the phonk bass pattern
     function playMelody() {
@@ -226,6 +265,7 @@ function startBackgroundMusic() {
     console.log('🎸 Phonk bass music started!');
   } catch (error) {
     console.log('Music not available:', error);
+    isMusicPlaying = false; // Reset flag on error
   }
 }
 
@@ -250,25 +290,22 @@ function stopBackgroundMusic() {
 // Start music on any user interaction (browser requires this)
 function tryStartMusic() {
   if (!isMusicPlaying) {
+    console.log('Attempting to start music...');
     startBackgroundMusic();
-    // Remove listeners after music starts
-    if (isMusicPlaying) {
-      document.removeEventListener('click', tryStartMusic);
-      document.removeEventListener('keydown', tryStartMusic);
-      document.removeEventListener('touchstart', tryStartMusic);
-      document.removeEventListener('mousemove', tryStartMusic);
-    }
+  } else {
+    console.log('Music already playing, not starting again.');
   }
 }
 
-// Listen for any interaction to start music
-document.addEventListener('click', tryStartMusic);
-document.addEventListener('keydown', tryStartMusic);
-document.addEventListener('touchstart', tryStartMusic);
-document.addEventListener('mousemove', tryStartMusic, { once: true });
-
 // Function to play hover sound
 function playHoverSound() {
+  // Start music on first button hover (but skip the beep sound)
+  if (firstInteraction) {
+    firstInteraction = false;
+    tryStartMusic();
+    return; // Don't play hover sound on first interaction
+  }
+  
   // Resume audio context if needed
   if (audioContext.state === 'suspended') {
     audioContext.resume();
@@ -292,10 +329,92 @@ function playHoverSound() {
   oscillator.stop(audioContext.currentTime + 0.1);
 }
 
+// Function to play click sound
+function playClickSound() {
+  if (audioContext.state === 'suspended') {
+    audioContext.resume();
+  }
+  
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  // Deeper click sound
+  oscillator.type = 'square';
+  oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+  oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.1);
+  
+  gainNode.gain.setValueAtTime(0.1 * gameSettings.sfxVolume, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01 * gameSettings.sfxVolume, audioContext.currentTime + 0.15);
+  
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.15);
+}
+
+// Function to play volume change feedback
+function playVolumeSound(pitch = 600) {
+  if (audioContext.state === 'suspended') {
+    audioContext.resume();
+  }
+  
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  oscillator.type = 'sine';
+  oscillator.frequency.setValueAtTime(pitch, audioContext.currentTime);
+  
+  gainNode.gain.setValueAtTime(0.1 * gameSettings.sfxVolume, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01 * gameSettings.sfxVolume, audioContext.currentTime + 0.08);
+  
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.08);
+}
+
 // Handle Start button hover and click
 const startButton = document.getElementById('start-button');
 startButton.addEventListener('mouseenter', playHoverSound);
-startButton.addEventListener('click', startGame);
+startButton.addEventListener('click', () => {
+  playClickSound();
+  startGame();
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    const titleScreen = document.getElementById('title-screen');
+    const rulesScreen = document.getElementById('rules-screen');
+    const settingsScreen = document.getElementById('settings-screen');
+    
+    // If on title screen, start game
+    if (titleScreen.style.display !== 'none' && 
+        rulesScreen.style.display === 'none' && 
+        settingsScreen.style.display === 'none') {
+      e.preventDefault();
+      playClickSound();
+      startGame();
+    }
+  }
+  
+  // ESC to close screens
+  if (e.key === 'Escape') {
+    const rulesScreen = document.getElementById('rules-screen');
+    const settingsScreen = document.getElementById('settings-screen');
+    
+    if (rulesScreen.style.display === 'flex') {
+      playClickSound();
+      rulesScreen.style.display = 'none';
+    }
+    if (settingsScreen.style.display === 'flex') {
+      playClickSound();
+      settingsScreen.style.display = 'none';
+    }
+  }
+});
 
 // Handle Rules button
 const rulesButton = document.getElementById('rules-button');
@@ -304,11 +423,13 @@ const backButton = document.getElementById('back-button');
 
 rulesButton.addEventListener('mouseenter', playHoverSound);
 rulesButton.addEventListener('click', () => {
+  playClickSound();
   rulesScreen.style.display = 'flex';
 });
 
 backButton.addEventListener('mouseenter', playHoverSound);
 backButton.addEventListener('click', () => {
+  playClickSound();
   rulesScreen.style.display = 'none';
 });
 
@@ -319,11 +440,13 @@ const settingsBackButton = document.getElementById('settings-back-button');
 
 settingsButton.addEventListener('mouseenter', playHoverSound);
 settingsButton.addEventListener('click', () => {
+  playClickSound();
   settingsScreen.style.display = 'flex';
 });
 
 settingsBackButton.addEventListener('mouseenter', playHoverSound);
 settingsBackButton.addEventListener('click', () => {
+  playClickSound();
   settingsScreen.style.display = 'none';
 });
 
@@ -337,7 +460,9 @@ sfxSlider.addEventListener('input', (e) => {
   sfxValue.textContent = `${value}%`;
 });
 
-sfxSlider.addEventListener('change', pla1HoverSound);
+sfxSlider.addEventListener('change', () => {
+  playVolumeSound(800);
+});
 
 // Music Volume slider
 const musicSlider = document.getElementById('music-volume');
@@ -353,12 +478,17 @@ musicSlider.addEventListener('input', (e) => {
   }
 });
 
+musicSlider.addEventListener('change', () => {
+  playVolumeSound(600);
+});
+
 // Difficulty buttons
 const difficultyButtons = document.querySelectorAll('.difficulty-btn');
 
 difficultyButtons.forEach(btn => {
   btn.addEventListener('mouseenter', playHoverSound);
   btn.addEventListener('click', () => {
+    playClickSound();
     difficultyButtons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     gameSettings.difficulty = btn.dataset.difficulty;
@@ -373,24 +503,159 @@ const toggleStatus = document.querySelector('.toggle-status');
 visualEffectsToggle.addEventListener('change', (e) => {
   gameSettings.visualEffects = e.target.checked;
   toggleStatus.textContent = e.target.checked ? 'ON' : 'OFF';
-  playHoverSound();
+  playClickSound();
   console.log('Visual effects:', gameSettings.visualEffects);
 });
 
 // Start game function (placeholder for your brothers to implement)
 function startGame() {
+  playClickSound();
   console.log('Game Starting...');
-  // Hide title screen with fade out
+  
+  // Show GET READY screen
+  const getReadyScreen = document.getElementById('get-ready-screen');
   const titleScreen = document.getElementById('title-screen');
-  titleScreen.style.transition = 'opacity 1s';
+  
+  titleScreen.style.transition = 'opacity 0.5s';
   titleScreen.style.opacity = '0';
   
   setTimeout(() => {
-    // Clear everything - blank screen for your brother to work with
     titleScreen.style.display = 'none';
-    canvas.style.display = 'none'; // Hide the starry background too
+    getReadyScreen.style.display = 'flex';
     
-    // Your brother can add the game code here
-    console.log('Blank screen ready - your brother can implement the game here!');
-  }, 1000);
+    // Countdown
+    let count = 3;
+    const countdownEl = document.getElementById('countdown');
+    
+    const countInterval = setInterval(() => {
+      playVolumeSound(1000 + (count * 100));
+      count--;
+      
+      if (count === 0) {
+        countdownEl.textContent = 'GO!';
+        playVolumeSound(1500);
+        
+        setTimeout(() => {
+          clearInterval(countInterval);
+          getReadyScreen.style.opacity = '0';
+          
+          setTimeout(() => {
+            getReadyScreen.style.display = 'none';
+            canvas.style.display = 'none';
+            console.log('Game ready - your brothers can implement the game here!');
+          }, 500);
+        }, 500);
+      } else if (count > 0) {
+        countdownEl.textContent = count;
+      }
+    }, 1000);
+  }, 500);
 }
+
+// Function to show game over screen (for brothers to call)
+function showGameOver(finalScore) {
+  const gameOverScreen = document.getElementById('game-over-screen');
+  const finalScoreEl = document.getElementById('final-score');
+  const newHighScoreEl = document.getElementById('new-high-score-msg');
+  
+  finalScoreEl.textContent = finalScore.toString().padStart(6, '0');
+  
+  // Check if new high score
+  if (setHighScore(finalScore)) {
+    newHighScoreEl.style.display = 'block';
+    const highScoreDisplay = document.getElementById('high-score');
+    if (highScoreDisplay) {
+      highScoreDisplay.textContent = `HI-SCORE: ${finalScore.toString().padStart(6, '0')}`;
+    }
+  } else {
+    newHighScoreEl.style.display = 'none';
+  }
+  
+  gameOverScreen.style.display = 'flex';
+  playVolumeSound(200); // Low game over sound
+}
+
+// Restart game from game over screen
+const restartButton = document.getElementById('restart-button');
+if (restartButton) {
+  restartButton.addEventListener('mouseenter', playHoverSound);
+  restartButton.addEventListener('click', () => {
+    playClickSound();
+    const gameOverScreen = document.getElementById('game-over-screen');
+    const titleScreen = document.getElementById('title-screen');
+    
+    gameOverScreen.style.display = 'none';
+    titleScreen.style.display = 'block';
+    titleScreen.style.opacity = '1';
+    canvas.style.display = 'block';
+  });
+}
+
+// UFO Animation
+class UFO {
+  constructor() {
+    this.reset();
+  }
+  
+  reset() {
+    this.active = false;
+    this.x = -100;
+    this.y = 50 + Math.random() * 100;
+    this.speed = 2 + Math.random();
+    this.size = 30;
+  }
+  
+  activate() {
+    if (!this.active && Math.random() < 0.001) { // Random chance to spawn
+      this.active = true;
+      this.reset();
+    }
+  }
+  
+  update() {
+    if (this.active) {
+      this.x += this.speed;
+      if (this.x > canvas.width + 100) {
+        this.active = false;
+      }
+    }
+  }
+  
+  draw() {
+    if (!this.active) return;
+    
+    ctx.save();
+    
+    // UFO body
+    ctx.fillStyle = '#ff0066';
+    ctx.shadowColor = '#ff0066';
+    ctx.shadowBlur = 15;
+    
+    // Dome
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size * 0.4, 0, Math.PI, true);
+    ctx.fill();
+    
+    // Base
+    ctx.beginPath();
+    ctx.ellipse(this.x, this.y, this.size, this.size * 0.3, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Lights
+    const lightCount = 5;
+    for (let i = 0; i < lightCount; i++) {
+      const angle = (Math.PI / lightCount) * i + Math.PI;
+      const lx = this.x + Math.cos(angle) * this.size * 0.7;
+      const ly = this.y + Math.sin(angle) * this.size * 0.2;
+      
+      ctx.fillStyle = Math.random() > 0.5 ? '#00ffff' : '#ffff00';
+      ctx.beginPath();
+      ctx.arc(lx, ly, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    ctx.restore();
+  }
+}
+
+ufo = new UFO();

@@ -13,12 +13,19 @@
     <div id="app">
       <canvas id="stars"></canvas>
       <div id="title-screen">
+        <div id="high-score" class="high-score">HI-SCORE: 000000</div>
+        
         <h1 class="game-title">SPACE<br>INVADERS</h1>
         <div class="subtitle">ASTRO SHOOTER</div>
         <div class="tagline">2-PLAYER CO-OP • DEFEND EARTH TOGETHER</div>
         <button id="start-button" class="start-button">START GAME</button>
         <button id="rules-button" class="rules-button">RULES</button>
         <button id="settings-button" class="settings-button">SETTINGS</button>
+        
+        <!-- Press Start / Keyboard Hints -->
+        <div class="press-start">PRESS ENTER OR SPACE TO START</div>
+        <div class="keyboard-hint">ESC TO GO BACK</div>
+        
         <div class="credits">Created by Kowsilo, Plum & Spade</div>
       </div>
       <div id="rules-screen" style="display: none;">
@@ -72,6 +79,27 @@
             </div>
           </div>
           <button id="settings-back-button" class="back-button">BACK</button>
+        </div>
+      </div>
+      
+      <!-- GET READY Screen -->
+      <div id="get-ready-screen" style="display: none;">
+        <div class="get-ready-container">
+          <h2 class="get-ready-title">GET READY!</h2>
+          <div id="countdown" class="countdown">3</div>
+        </div>
+      </div>
+      
+      <!-- Game Over Screen -->
+      <div id="game-over-screen" style="display: none;">
+        <div class="game-over-container">
+          <h2 class="game-over-title">GAME OVER</h2>
+          <div id="new-high-score-msg" class="new-high-score" style="display: none;">★ NEW HIGH SCORE! ★</div>
+          <div class="score-display">
+            <div class="score-label">YOUR SCORE</div>
+            <div id="final-score" class="final-score">000000</div>
+          </div>
+          <button id="restart-button" class="back-button">MAIN MENU</button>
         </div>
       </div>
     </div>

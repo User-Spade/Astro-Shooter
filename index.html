@@ -7,18 +7,42 @@
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
-    <div id="app">
-      <canvas id="gameCanvas"></canvas>
-      <div id="ui">
-        <div id="leftStats" class="stats">
-          <h2>Player 1 (A/D + W)</h2>
-          <p>Score: <span id="p1Score">0</span></p>
-          <p>Health: <span id="p1Health">100</span></p>
-        </div>
-        <div id="rightStats" class="stats">
-          <h2>Player 2 (← → + ↑)</h2>
-          <p>Score: <span id="p2Score">0</span></p>
-          <p>Health: <span id="p2Health">100</span></p>
+    <!-- Title Screen -->
+    <div id="title-screen" class="screen">
+      <h1>Astro Shooter</h1>
+      <p>Local 2-player split-screen shooter</p>
+      <div class="menu">
+        <button id="start-button">Start</button>
+        <button id="rules-button">Rules</button>
+      </div>
+    </div>
+
+    <!-- Rules Screen -->
+    <div id="rules-screen" class="screen" style="display:none;">
+      <h2>Rules</h2>
+      <ul>
+        <li>Player 1: A / D to move, W to shoot</li>
+        <li>Player 2: ← / → to move, ↑ to shoot</li>
+        <li>Shoot enemies and collect power-ups</li>
+      </ul>
+      <button class="back-button">Back</button>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen" style="display:none;">
+      <div id="app">
+        <canvas id="gameCanvas"></canvas>
+        <div id="ui">
+          <div id="leftStats" class="stats">
+            <h2>Player 1 (A/D + W)</h2>
+            <p>Score: <span id="p1Score">0</span></p>
+            <p>Health: <span id="p1Health">100</span></p>
+          </div>
+          <div id="rightStats" class="stats">
+            <h2>Player 2 (← → + ↑)</h2>
+            <p>Score: <span id="p2Score">0</span></p>
+            <p>Health: <span id="p2Health">100</span></p>
+          </div>
         </div>
       </div>
     </div>

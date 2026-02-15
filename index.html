@@ -4,10 +4,22 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>astro-shooter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>Space Invaders</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <canvas id="stars"></canvas>
+      <div id="title-screen">
+        <h1 class="game-title">SPACE<br>INVADERS</h1>
+        <div class="subtitle">ASTRO SHOOTER</div>
+        <div class="alien-sprite">👾</div>
+        <div class="start-prompt">PRESS ENTER TO START</div>
+        <div class="credits">Created by Three Brothers</div>
+      </div>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

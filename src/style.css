@@ -1,96 +1,191 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Press Start 2P', cursive;
+  --primary-blue: #0066ff;
+  --light-blue: #00ccff;
+  --white: #ffffff;
+  --dark-blue: #001133;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  overflow: hidden;
+  background: #000011;
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Starry Background Canvas */
+#stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background: linear-gradient(to bottom, #000011 0%, #001133 50%, #000522 100%);
+}
+
+/* Title Screen Container */
+#title-screen {
+  position: relative;
+  z-index: 1;
   text-align: center;
+  color: var(--white);
+  animation: fadeIn 2s ease-in;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #f7df1eaa);
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+/* Game Title */
+.game-title {
+  font-size: 6rem;
+  line-height: 1.3;
+  color: var(--white);
+  text-shadow: 
+    0 0 10px var(--light-blue),
+    0 0 20px var(--light-blue),
+    0 0 30px var(--primary-blue),
+    0 0 40px var(--primary-blue),
+    0 5px 0 var(--primary-blue);
+  margin-bottom: 1rem;
+  letter-spacing: 0.1em;
+  animation: glowPulse 2s ease-in-out infinite;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* Subtitle */
+.subtitle {
+  font-size: 1.5rem;
+  color: var(--light-blue);
+  text-shadow: 0 0 10px var(--light-blue);
+  margin-bottom: 3rem;
+  letter-spacing: 0.2em;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+/* Alien Sprite */
+.alien-sprite {
+  font-size: 4rem;
+  color: var(--light-blue);
+  margin: 2rem 0;
+  animation: alienBounce 1.5s ease-in-out infinite;
+  text-shadow: 0 0 20px var(--light-blue);
+}
+
+/* Start Prompt */
+.start-prompt {
+  font-size: 1.5rem;
+  color: var(--white);
+  margin-top: 3rem;
+  animation: blink 1.5s ease-in-out infinite;
+  text-shadow: 0 0 10px var(--white);
+}
+
+/* Credits */
+.credits {
+  font-size: 0.6rem;
+  color: var(--primary-blue);
+  margin-top: 4rem;
+  opacity: 0.7;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
   }
-  a:hover {
-    color: #747bff;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  button {
-    background-color: #f9f9f9;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    text-shadow: 
+      0 0 10px var(--light-blue),
+      0 0 20px var(--light-blue),
+      0 0 30px var(--primary-blue),
+      0 0 40px var(--primary-blue),
+      0 5px 0 var(--primary-blue);
+  }
+  50% {
+    text-shadow: 
+      0 0 20px var(--light-blue),
+      0 0 30px var(--light-blue),
+      0 0 40px var(--primary-blue),
+      0 0 50px var(--primary-blue),
+      0 5px 0 var(--primary-blue);
+  }
+}
+
+@keyframes blink {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes alienBounce {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .game-title {
+    font-size: 3.5rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .alien-sprite {
+    font-size: 3rem;
+  }
+  
+  .start-prompt {
+    font-size: 1.2rem;
+  }
+  
+  .credits {
+    font-size: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-title {
+    font-size: 2.5rem;
+  }
+  
+  .subtitle {
+    font-size: 0.8rem;
+  }
+  
+  .alien-sprite {
+    font-size: 2rem;
+  }
+  
+  .start-prompt {
+    font-size: 1rem;
   }
 }

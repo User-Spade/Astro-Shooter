@@ -15,9 +15,64 @@
       <div id="title-screen">
         <h1 class="game-title">SPACE<br>INVADERS</h1>
         <div class="subtitle">ASTRO SHOOTER</div>
-        <div class="alien-sprite">👾</div>
-        <div class="start-prompt">PRESS ENTER TO START</div>
-        <div class="credits">Created by Three Brothers</div>
+        <div class="tagline">2-PLAYER CO-OP • DEFEND EARTH TOGETHER</div>
+        <button id="start-button" class="start-button">START GAME</button>
+        <button id="rules-button" class="rules-button">RULES</button>
+        <button id="settings-button" class="settings-button">SETTINGS</button>
+        <div class="credits">Created by Kowsilo, Plum & Spade</div>
+      </div>
+      <div id="rules-screen" style="display: none;">
+        <div class="rules-container">
+          <h2 class="rules-title">HOW TO PLAY</h2>
+          <div class="rules-content">
+            <p class="player-header">PLAYER 1 (LEFT SIDE)</p>
+            <p>◆ W A S D keys to move</p>
+            <p>◆ SPACEBAR to shoot</p>
+            <p></p>
+            <p class="player-header">PLAYER 2 (RIGHT SIDE)</p>
+            <p>◆ Arrow keys to move</p>
+            <p>◆ ENTER to shoot</p>
+            <p></p>
+            <p class="player-header">MAIN GOALS</p>
+            <p>◆ Destroy all aliens to win</p>
+            <p>◆ Don't let the aliens reach the planet</p>
+          </div>
+          <button id="back-button" class="back-button">BACK</button>
+        </div>
+      </div>
+      <div id="settings-screen" style="display: none;">
+        <div class="settings-container">
+          <h2 class="settings-title">SETTINGS</h2>
+          <div class="settings-content">
+            <div class="setting-item">
+              <label class="setting-label">SFX VOLUME</label>
+              <input type="range" id="sfx-volume" class="slider" min="0" max="100" value="60">
+              <span id="sfx-value" class="value-display">60%</span>
+            </div>
+            <div class="setting-item">
+              <label class="setting-label">MUSIC VOLUME</label>
+              <input type="range" id="music-volume" class="slider" min="0" max="100" value="50">
+              <span id="music-value" class="value-display">50%</span>
+            </div>
+            <div class="setting-item">
+              <label class="setting-label">DIFFICULTY</label>
+              <div class="difficulty-buttons">
+                <button class="difficulty-btn" data-difficulty="easy">EASY</button>
+                <button class="difficulty-btn active" data-difficulty="normal">NORMAL</button>
+                <button class="difficulty-btn" data-difficulty="hard">HARD</button>
+              </div>
+            </div>
+            <div class="setting-item">
+              <label class="setting-label">VISUAL EFFECTS</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="visual-effects" checked>
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="toggle-status">ON</span>
+            </div>
+          </div>
+          <button id="settings-back-button" class="back-button">BACK</button>
+        </div>
       </div>
     </div>
     <script type="module" src="/src/main.js"></script>

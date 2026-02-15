@@ -80,11 +80,129 @@ window.addEventListener('resize', () => {
   canvas.height = window.innerHeight;
 });
 
-// Handle Enter key to start game
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    startGame();
+//  Create audio context for sound effects
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+// Game settings
+const gameSettings = {
+  sfxVolume: 0.6,
+  musicVolume: 0.5,
+  difficulty: 'normal',
+  visualEffects: true
+};
+
+// Resume audio context on first user interaction (browser security requirement)
+document.addEventListener('click', () => {
+  if (audioContext.state === 'suspended') {
+    audioContext.resume();
   }
+}, { once: true });
+
+// Function to play hover sound
+function playHoverSound() {
+  // Resume audio context if needed
+  if (audioContext.state === 'suspended') {
+    audioContext.resume();
+  }
+  
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  // Retro arcade blip sound
+  oscillator.type = 'square';
+  oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+  
+  // Quick fade out with volume from settings
+  gainNode.gain.setValueAtTime(0.18 * gameSettings.sfxVolume, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01 * gameSettings.sfxVolume, audioContext.currentTime + 0.1);
+  
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.1);
+}
+
+// Handle Start button hover and click
+const startButton = document.getElementById('start-button');
+startButton.addEventListener('mouseenter', playHoverSound);
+startButton.addEventListener('click', startGame);
+
+// Handle Rules button
+const rulesButton = document.getElementById('rules-button');
+const rulesScreen = document.getElementById('rules-screen');
+const backButton = document.getElementById('back-button');
+
+rulesButton.addEventListener('mouseenter', playHoverSound);
+rulesButton.addEventListener('click', () => {
+  rulesScreen.style.display = 'flex';
+});
+
+backButton.addEventListener('mouseenter', playHoverSound);
+backButton.addEventListener('click', () => {
+  rulesScreen.style.display = 'none';
+});
+
+// Handle Settings button
+const settingsButton = document.getElementById('settings-button');
+const settingsScreen = document.getElementById('settings-screen');
+const settingsBackButton = document.getElementById('settings-back-button');
+
+settingsButton.addEventListener('mouseenter', playHoverSound);
+settingsButton.addEventListener('click', () => {
+  settingsScreen.style.display = 'flex';
+});
+
+settingsBackButton.addEventListener('mouseenter', playHoverSound);
+settingsBackButton.addEventListener('click', () => {
+  settingsScreen.style.display = 'none';
+});
+
+// SFX Volume slider
+const sfxSlider = document.getElementById('sfx-volume');
+const sfxValue = document.getElementById('sfx-value');
+
+sfxSlider.addEventListener('input', (e) => {
+  const value = e.target.value;
+  gameSettings.sfxVolume = value / 100;
+  sfxValue.textContent = `${value}%`;
+});
+
+sfxSlider.addEventListener('change', playHoverSound);
+
+// Music Volume slider
+const musicSlider = document.getElementById('music-volume');
+const musicValue = document.getElementById('music-value');
+
+musicSlider.addEventListener('input', (e) => {
+  const value = e.target.value;
+  gameSettings.musicVolume = value / 100;
+  musicValue.textContent = `${value}%`;
+  // Your brothers can use gameSettings.musicVolume for their music volume
+});
+
+// Difficulty buttons
+const difficultyButtons = document.querySelectorAll('.difficulty-btn');
+
+difficultyButtons.forEach(btn => {
+  btn.addEventListener('mouseenter', playHoverSound);
+  btn.addEventListener('click', () => {
+    difficultyButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    gameSettings.difficulty = btn.dataset.difficulty;
+    console.log('Difficulty set to:', gameSettings.difficulty);
+  });
+});
+
+// Visual Effects toggle
+const visualEffectsToggle = document.getElementById('visual-effects');
+const toggleStatus = document.querySelector('.toggle-status');
+
+visualEffectsToggle.addEventListener('change', (e) => {
+  gameSettings.visualEffects = e.target.checked;
+  toggleStatus.textContent = e.target.checked ? 'ON' : 'OFF';
+  playHoverSound();
+  console.log('Visual effects:', gameSettings.visualEffects);
 });
 
 // Start game function (placeholder for your brothers to implement)

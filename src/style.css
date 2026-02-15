@@ -55,10 +55,9 @@ body {
   line-height: 1.3;
   color: var(--white);
   text-shadow: 
-    0 0 10px var(--light-blue),
-    0 0 20px var(--light-blue),
-    0 0 30px var(--primary-blue),
-    0 0 40px var(--primary-blue),
+    0 0 8px var(--light-blue),
+    0 0 15px var(--light-blue),
+    0 0 25px var(--primary-blue),
     0 5px 0 var(--primary-blue);
   margin-bottom: 1rem;
   letter-spacing: 0.1em;
@@ -67,11 +66,21 @@ body {
 
 /* Subtitle */
 .subtitle {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: var(--light-blue);
-  text-shadow: 0 0 10px var(--light-blue);
-  margin-bottom: 3rem;
+  text-shadow: 0 0 6px var(--light-blue);
+  margin-bottom: 0.5rem;
   letter-spacing: 0.2em;
+}
+
+/* Tagline */
+.tagline {
+  font-size: 0.6rem;
+  color: var(--white);
+  text-shadow: 0 0 5px var(--primary-blue);
+  margin-bottom: 2rem;
+  letter-spacing: 0.1em;
+  opacity: 0.8;
 }
 
 /* Alien Sprite */
@@ -83,20 +92,376 @@ body {
   text-shadow: 0 0 20px var(--light-blue);
 }
 
-/* Start Prompt */
-.start-prompt {
-  font-size: 1.5rem;
+/* Start Button */
+.start-button {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.3rem;
   color: var(--white);
-  margin-top: 3rem;
+  background: transparent;
+  border: 3px solid var(--light-blue);
+  padding: 1.2rem 2.5rem;
+  margin-top: 2rem;
+  cursor: pointer;
+  text-shadow: 0 0 6px var(--white);
+  box-shadow: 
+    0 0 15px var(--light-blue),
+    inset 0 0 15px rgba(0, 204, 255, 0.15);
   animation: blink 1.5s ease-in-out infinite;
-  text-shadow: 0 0 10px var(--white);
+  transition: all 0.3s ease;
+}
+
+.start-button:hover {
+  background: var(--light-blue);
+  color: var(--dark-blue);
+  transform: scale(1.1);
+  box-shadow: 
+    0 0 20px var(--light-blue),
+    0 0 30px var(--primary-blue),
+    inset 0 0 20px rgba(0, 204, 255, 0.4);
+  animation: none;
+}
+
+.start-button:active {
+  transform: scale(1.05);
+}
+
+/* Rules Button */
+.rules-button {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.3rem;
+  color: var(--white);
+  background: transparent;
+  border: 2px solid var(--primary-blue);
+  padding: 1.2rem 2.5rem;
+  margin-top: 1rem;
+  cursor: pointer;
+  text-shadow: 0 0 6px var(--white);
+  box-shadow: 
+    0 0 10px var(--primary-blue),
+    inset 0 0 10px rgba(0, 102, 255, 0.15);
+  transition: all 0.3s ease;
+}
+
+.rules-button:hover {
+  background: var(--primary-blue);
+  color: var(--white);
+  transform: scale(1.05);
+  box-shadow: 
+    0 0 15px var(--primary-blue),
+    inset 0 0 15px rgba(0, 102, 255, 0.3);
+}
+
+.rules-button:active {
+  transform: scale(1.0);
+}
+
+/* Settings Button */
+.settings-button {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.3rem;
+  color: var(--white);
+  background: transparent;
+  border: 2px solid var(--primary-blue);
+  padding: 1.2rem 2.5rem;
+  margin-top: 1rem;
+  cursor: pointer;
+  text-shadow: 0 0 6px var(--white);
+  box-shadow: 
+    0 0 10px var(--primary-blue),
+    inset 0 0 10px rgba(0, 102, 255, 0.15);
+  transition: all 0.3s ease;
+}
+
+.settings-button:hover {
+  background: var(--primary-blue);
+  color: var(--white);
+  transform: scale(1.05);
+  box-shadow: 
+    0 0 15px var(--primary-blue),
+    inset 0 0 15px rgba(0, 102, 255, 0.3);
+}
+
+.settings-button:active {
+  transform: scale(1.0);
+}
+
+/* Rules Screen */
+#rules-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* Settings Screen */
+#settings-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.rules-container {
+  background: rgba(0, 17, 51, 0.95);
+  border: 3px solid var(--light-blue);
+  padding: 3rem;
+  max-width: 600px;
+  text-align: center;
+  box-shadow: 
+    0 0 30px var(--light-blue),
+    inset 0 0 30px rgba(0, 204, 255, 0.1);
+  animation: fadeIn 0.5s ease-in;
+}
+
+.rules-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 2rem;
+  color: var(--white);
+  text-shadow: 0 0 10px var(--light-blue);
+  margin-bottom: 2rem;
+}
+
+.rules-content {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.9rem;
+  color: var(--light-blue);
+  line-height: 2.5;
+  margin-bottom: 2rem;
+}
+
+.rules-content p {
+  margin: 1rem 0;
+}
+
+.rules-content .player-header {
+  color: var(--white);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  text-shadow: 0 0 8px var(--light-blue);
+}
+
+/* Back Button */
+.back-button {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1rem;
+  color: var(--white);
+  background: transparent;
+  border: 2px solid var(--light-blue);
+  padding: 1rem 2rem;
+  margin-top: 1rem;
+  cursor: pointer;
+  text-shadow: 0 0 6px var(--white);
+  box-shadow: 
+    0 0 10px var(--light-blue),
+    inset 0 0 10px rgba(0, 204, 255, 0.15);
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background: var(--light-blue);
+  color: var(--dark-blue);
+  transform: scale(1.05);
+  box-shadow: 
+    0 0 15px var(--light-blue),
+    inset 0 0 15px rgba(0, 204, 255, 0.3);
+}
+
+/* Settings Container */
+.settings-container {
+  background: rgba(0, 17, 51, 0.95);
+  border: 3px solid var(--light-blue);
+  padding: 3rem;
+  max-width: 650px;
+  text-align: center;
+  box-shadow: 
+    0 0 30px var(--light-blue),
+    inset 0 0 30px rgba(0, 204, 255, 0.1);
+  animation: fadeIn 0.5s ease-in;
+}
+
+.settings-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 2rem;
+  color: var(--white);
+  text-shadow: 0 0 10px var(--light-blue);
+  margin-bottom: 2.5rem;
+}
+
+.settings-content {
+  font-family: 'Press Start 2P', cursive;
+  color: var(--light-blue);
+  margin-bottom: 2rem;
+}
+
+.setting-item {
+  margin: 2rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(0, 204, 255, 0.2);
+}
+
+.setting-label {
+  font-size: 0.9rem;
+  color: var(--white);
+  text-shadow: 0 0 5px var(--light-blue);
+  min-width: 180px;
+  text-align: left;
+}
+
+/* Slider Styles */
+.slider {
+  width: 200px;
+  height: 8px;
+  background: rgba(0, 102, 255, 0.3);
+  outline: none;
+  border: 2px solid var(--primary-blue);
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--light-blue);
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--light-blue);
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--light-blue);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 10px var(--light-blue);
+}
+
+.value-display {
+  font-size: 0.8rem;
+  color: var(--light-blue);
+  min-width: 50px;
+  text-align: right;
+}
+
+/* Difficulty Buttons */
+.difficulty-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.difficulty-btn {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.7rem;
+  color: var(--white);
+  background: transparent;
+  border: 2px solid var(--primary-blue);
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.difficulty-btn:hover {
+  background: rgba(0, 102, 255, 0.3);
+  box-shadow: 0 0 10px var(--primary-blue);
+}
+
+.difficulty-btn.active {
+  background: var(--primary-blue);
+  box-shadow: 0 0 15px var(--primary-blue);
+  color: var(--white);
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 30px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 102, 255, 0.3);
+  border: 2px solid var(--primary-blue);
+  transition: 0.3s;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--white);
+  transition: 0.3s;
+  box-shadow: 0 0 5px var(--white);
+}
+
+input:checked + .toggle-slider {
+  background-color: var(--primary-blue);
+  box-shadow: 0 0 10px var(--primary-blue);
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+  background-color: var(--light-blue);
+  box-shadow: 0 0 10px var(--light-blue);
+}
+
+.toggle-status {
+  font-size: 0.8rem;
+  color: var(--light-blue);
+  min-width: 50px;
+  text-align: right;
+} box-shadow: 
+    0 0 10px var(--light-blue),
+    inset 0 0 10px rgba(0, 204, 255, 0.15);
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background: var(--light-blue);
+  color: var(--dark-blue);
+  transform: scale(1.05);
+  box-shadow: 
+    0 0 15px var(--light-blue),
+    inset 0 0 15px rgba(0, 204, 255, 0.3);
 }
 
 /* Credits */
 .credits {
   font-size: 0.6rem;
   color: var(--primary-blue);
-  margin-top: 4rem;
+  margin-top: 3rem;
   opacity: 0.7;
 }
 
@@ -115,18 +480,16 @@ body {
 @keyframes glowPulse {
   0%, 100% {
     text-shadow: 
-      0 0 10px var(--light-blue),
-      0 0 20px var(--light-blue),
-      0 0 30px var(--primary-blue),
-      0 0 40px var(--primary-blue),
+      0 0 8px var(--light-blue),
+      0 0 15px var(--light-blue),
+      0 0 25px var(--primary-blue),
       0 5px 0 var(--primary-blue);
   }
   50% {
     text-shadow: 
+      0 0 12px var(--light-blue),
       0 0 20px var(--light-blue),
-      0 0 30px var(--light-blue),
-      0 0 40px var(--primary-blue),
-      0 0 50px var(--primary-blue),
+      0 0 30px var(--primary-blue),
       0 5px 0 var(--primary-blue);
   }
 }
@@ -159,12 +522,53 @@ body {
     font-size: 1rem;
   }
   
+  .tagline {
+    font-size: 0.6rem;
+  }
+  
   .alien-sprite {
     font-size: 3rem;
   }
   
-  .start-prompt {
+  .start-button {
     font-size: 1.2rem;
+    padding: 1.2rem 2.5rem;
+  }
+  
+  .rules-button, .settings-button {
+    font-size: 1rem;
+    padding: 1rem 2rem;
+  }
+  
+  .rules-title, .settings-title {
+    font-size: 1.5rem;
+  }
+  
+  .rules-content {
+    font-size: 0.7rem;
+  }
+  
+  .settings-container {
+    padding: 2rem;
+  }
+  
+  .setting-label {
+    font-size: 0.7rem;
+    min-width: 120px;
+  }
+  
+  .slider {
+    width: 150px;
+  }
+  
+  .difficulty-btn {
+    font-size: 0.6rem;
+    padding: 0.5rem 0.8rem;
+  }
+  
+  .back-button {
+    font-size: 0.8rem;
+    padding: 0.8rem 1.5rem;
   }
   
   .credits {
@@ -181,11 +585,56 @@ body {
     font-size: 0.8rem;
   }
   
+  .tagline {
+    font-size: 0.5rem;
+  }
+  
   .alien-sprite {
     font-size: 2rem;
   }
   
-  .start-prompt {
+  .start-button {
     font-size: 1rem;
+    padding: 1rem 2rem;
+  }
+  
+  .rules-button, .settings-button {
+    font-size: 0.8rem;
+    padding: 0.8rem 1.5rem;
+  }
+  
+  .rules-title, .settings-title {
+    font-size: 1.2rem;
+  }
+  
+  .rules-content {
+    font-size: 0.6rem;
+  }
+  
+  .settings-container {
+    padding: 1.5rem;
+  }
+  
+  .setting-item {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .setting-label {
+    font-size: 0.6rem;
+  }
+  
+  .slider {
+    width: 120px;
+  }
+  
+  .difficulty-btn {
+    font-size: 0.5rem;
+    padding: 0.4rem 0.6rem;
+  }
+  
+  .back-button {
+    font-size: 0.7rem;
+    padding: 0.7rem 1.2rem;
   }
 }

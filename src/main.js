@@ -80,6 +80,8 @@ window.addEventListener('resize', () => {
   canvas.height = window.innerHeight;
 });
 
+let gameStarted = false;
+
 // Handle Enter key to start game
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
@@ -89,18 +91,98 @@ document.addEventListener('keydown', (e) => {
 
 // Start game function (placeholder for your brothers to implement)
 function startGame() {
+  if (gameStarted) return;
+  gameStarted = true;
+
   console.log('Game Starting...');
   // Hide title screen with fade out
   const titleScreen = document.getElementById('title-screen');
   titleScreen.style.transition = 'opacity 1s';
   titleScreen.style.opacity = '0';
-  
+
   setTimeout(() => {
-    // Clear everything - blank screen for your brother to work with
     titleScreen.style.display = 'none';
-    canvas.style.display = 'none'; // Hide the starry background too
-    
-    // Your brother can add the game code here
-    console.log('Blank screen ready - your brother can implement the game here!');
+    canvas.style.display = 'none';
+    initGame();
   }, 1000);
+}
+
+function initGame() {
+  const app = document.getElementById('app');
+  const gameCanvas = document.createElement('canvas');
+  const gameCtx = gameCanvas.getContext('2d');
+  gameCanvas.id = 'game-canvas';
+  gameCanvas.width = window.innerWidth;
+  gameCanvas.height = window.innerHeight;
+  app.appendChild(gameCanvas);
+
+  const keys = new Set();
+  const ship = {
+    size: 30,
+    speed: 320,
+    x: gameCanvas.width / 2 - 15,
+    y: gameCanvas.height - 90
+  };
+
+  const onKeyDown = (e) => {
+    const key = e.key.toLowerCase();
+    if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'w', 'a', 's', 'd'].includes(key)) {
+      keys.add(key);
+      e.preventDefault();
+    }
+  };
+
+  const onKeyUp = (e) => {
+    const key = e.key.toLowerCase();
+    keys.delete(key);
+  };
+
+  document.addEventListener('keydown', onKeyDown);
+  document.addEventListener('keyup', onKeyUp);
+
+  const resizeGame = () => {
+    gameCanvas.width = window.innerWidth;
+    gameCanvas.height = window.innerHeight;
+  };
+
+  window.addEventListener('resize', resizeGame);
+
+  let lastTime = performance.now();
+
+  function update(deltaSeconds) {
+    let dx = 0;
+    let dy = 0;
+
+    if (keys.has('arrowleft') || keys.has('a')) dx -= 1;
+    if (keys.has('arrowright') || keys.has('d')) dx += 1;
+    if (keys.has('arrowup') || keys.has('w')) dy -= 1;
+    if (keys.has('arrowdown') || keys.has('s')) dy += 1;
+
+    if (dx !== 0 || dy !== 0) {
+      const length = Math.hypot(dx, dy) || 1;
+      ship.x += (dx / length) * ship.speed * deltaSeconds;
+      ship.y += (dy / length) * ship.speed * deltaSeconds;
+    }
+
+    ship.x = Math.min(Math.max(ship.x, 0), gameCanvas.width - ship.size);
+    ship.y = Math.min(Math.max(ship.y, 0), gameCanvas.height - ship.size);
+  }
+
+  function draw() {
+    gameCtx.fillStyle = '#000000';
+    gameCtx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+    gameCtx.fillStyle = '#00ccff';
+    gameCtx.fillRect(ship.x, ship.y, ship.size, ship.size);
+  }
+
+  function loop(now) {
+    const deltaSeconds = (now - lastTime) / 1000;
+    lastTime = now;
+    update(deltaSeconds);
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  requestAnimationFrame(loop);
 }
